@@ -3,7 +3,7 @@
 
 
 #include "ioc_container.h"
-#include "datagetter.h"
+#include "DataGetter.h"
 #include "chartdrawer.h"
 
 

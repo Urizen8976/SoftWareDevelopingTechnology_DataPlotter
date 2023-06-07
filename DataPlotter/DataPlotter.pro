@@ -16,7 +16,8 @@ SOURCES += \
 
 HEADERS += \
     MainWindow.h \
-    IOC-Container.h
+    IOC-Container.h \
+    DataGetter.h
 
 FORMS += \
     MainWindow.ui
