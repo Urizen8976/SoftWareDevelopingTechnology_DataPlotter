@@ -157,6 +157,7 @@ void MainWindow::on_selectionListChangedSlot(const QItemSelection &selected, con
     }
 }
 
+
 void MainWindow::onCheckBoxStateChanged(int state)
 {
     if (state == Qt::Checked)
@@ -168,7 +169,9 @@ void MainWindow::onCheckBoxStateChanged(int state)
     else {   chartView->chart()->setGraphicsEffect(nullptr);   }
 }
 
+
 void MainWindow::onButtonOpenTreeView() {   treeView -> show();   }
+
 
 void MainWindow::comboBoxItemSelected(int index)
 {
@@ -191,5 +194,6 @@ void MainWindow::comboBoxItemSelected(int index)
     else
     {}   //вывод отсутствия данных на экран
 }
+
 
 MainWindow::~MainWindow() {   delete ui;   }
