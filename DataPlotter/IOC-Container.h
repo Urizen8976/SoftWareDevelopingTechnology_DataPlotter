@@ -5,7 +5,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
-#include <map>
+#include <map>          //  Библ. с шаблонным классом для реализации фссоциативного контейнера (коллекции фабрик определенных типов)
 #include <string>
 
 
