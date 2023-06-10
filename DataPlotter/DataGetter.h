@@ -37,11 +37,11 @@ class SQLiteDataGetterStrategy : public IDataGetterStrategy
 {
     bool CheckFile(const QString &filePath)
     {
-        openDatabase(filePath);                                                 // ???
+        openDatabase(filePath);
         QStringList tables = database.tables();            //  Возвращение списка таблиц базы данных, системных таблиц и представлений.
-        if (tables.isEmpty()) {
-            qDebug() << "В базе данных отсутствуют таблицы";
-            closeDatabase();                                                    // ???
+        if (tables.isEmpty()) {                            //  Проверка списка не содержание элементов
+            qDebug() << "В БД отсутствуют таблицы";        //  Использование глобальной функции для записи пользовательской отладочной информации
+            closeDatabase();
             return false;
         }
         closeDatabase();
@@ -51,16 +51,16 @@ class SQLiteDataGetterStrategy : public IDataGetterStrategy
     {
         closeDatabase();
         openDatabase(filePath);
-        QList<QPair<QString, qreal>> data;
-        QStringList tables = database.tables();
-        QString tableName = tables.first();
-        QSqlQuery query;
-        // пока что будем считать, что запрос выполняется в любом случае
-        query.exec("SELECT * FROM " + tableName + " "); // предусмотреть sql инъекцию?
-        while (query.next()) {
-            QString Time = query.value(0).toString();
-            qreal Value = query.value(1).toReal();
-            data.append(qMakePair(Time, Value));
+        QList<QPair<QString, qreal>> data;                 //  Создание списка пар значений строка - 64-битовое значение с плавающей точкой
+        QStringList tables = database.tables();            //  Возвращение списка таблиц базы данных, системных таблиц и представлений.
+        QString tableName = tables.first();                //  Возвращение ссылки на первый элемент (имя таблицы) в списке.
+        QSqlQuery query;                                   //  Создание пустого запроса
+        query.exec("SELECT * FROM " + tableName + " ");    //  Возвращает true и уст-ет состояние запроса в active если запрос SQL был успешным;
+        while (query.next())                               //  Проверка доступности следующей записи, и размещение запроса в полученной записи.
+        {
+            QString Time = query.value(0).toString();      //  Возвращение строки со значением поля index в текущей записи.
+            qreal Value = query.value(1).toReal();         //  Возвращение QVariant как qreal
+            data.append(qMakePair(Time, Value));           //  Добавление в список пары значений (данных) в виде [дата, значение].
         }
         closeDatabase();
         return data;
@@ -96,27 +96,21 @@ public:
     bool CheckFile(const QString& filePath)
     {
         QFile file(filePath);
-        if (!file.open(QIODevice::ReadOnly))
+        if (!file.open(QIODevice::ReadOnly))              //  Открытие файла с помощью перечисления QIODevice для открытия на чтения.
         {
-                qDebug() << "Не удалось открыть файл:" << filePath;
-                return false;
+            qDebug() << "Не удалось открыть файл:" << filePath; return false;
         }
-
-        QByteArray jsonData = file.readAll();
-        file.close();
-
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
-        if (jsonDoc.isNull() || !jsonDoc.isArray())
-        {
-                qDebug() << "Данный файл JSON некорректен";
-                return false;
+        QByteArray jsonData = file.readAll();             //  Считывание всех данных с устройства и возвращение их в виде массива байтов.
+        file.close();                                     //  Закрытие устройства и установка его OpenMode значение NotOpen
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);  //  Преобразование парсером из текста в QJsonDocument двоичное представление
+        if (jsonDoc.isNull() || !jsonDoc.isArray())                 //  Проверка документа на нулевость и содержание массива
+        {                                                           //  Нулевой документ создан через конструктор по умолчанию
+            qDebug() << "Данный файл JSON некорректен"; return false;
         }
-
         QJsonArray jsonArray = jsonDoc.array();
         if (jsonArray.isEmpty())
         {
-                qDebug() << "Данный JSON файл пуст!";
-                return false;
+            qDebug() << "Данный JSON файл пуст!"; return false;
         }
 
         return true;
@@ -133,13 +127,13 @@ public:
         QList<QPair<QString, qreal>> data;
         for (const QJsonValue& value : jsonArray)
         {
-                if (value.isObject())
-                {
-                    QJsonObject obj = value.toObject();
-                    QString Time = obj["Time"].toString();
-                    qreal Value = obj["Value"].toDouble();
-                    data.append(QPair<QString, qreal>(Time, Value));
-                }
+            if (value.isObject())
+            {
+                QJsonObject obj = value.toObject();
+                QString Time = obj["Time"].toString();
+                qreal Value = obj["Value"].toDouble();
+                data.append(QPair<QString, qreal>(Time, Value));
+            }
         }
         return data;
     }
