@@ -3,8 +3,6 @@
 
 
 #include <QtWidgets>           //  Подключение модуля классов для расширения Qt GUI виджетами C++.
-
-
 #include <QMainWindow>
 #include <QWidget>
 #include <QFileSystemModel>
@@ -18,19 +16,16 @@
 #include <QTableView>
 #include <QHeaderView>
 #include <QStatusBar>
-
 #include <QtSql>                //  Подключение библиотеки для работы с БД
 #include <QSqlQueryModel>
-
 #include <QtCharts/QChartView>  //  Подключение библиотеки для работы с графиками
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QPieSlice>
 #include <QtCharts>
 #include <QPainter>
 #include <QPdfWriter>
-/*
-#include "ioc_container.h"
-#include "chartdrawer.h"*/
+#include "IOC-Container.h"
+#include "DataGetter.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -41,12 +36,13 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setChartStrategy(std::shared_ptr<ChartStrategy> strategy) {   chartStrategy = strategy;   }
-    void drawChart() {   chartStrategy->draw(chartView, fileData);   }
+    void setStrategy(std::shared_ptr<IStrategy> strategy) {   m_strategy = strategy;   }
+    // void drawChart() {   IStrategy->draw(chartView, fileData);   }
+    bool CheckFile() {  return m_strategy->CheckFile(filePath);  }
+    QList<QPair<QString, qreal>> GetData() {  return m_strategy->GetData(filePath);  }
 
 private:
     Ui::MainWindow *ui;
@@ -56,22 +52,19 @@ private:
     QTreeView *treeView;
     QListView *listView;
     QChartView *chartView;                         //  Все для графика
-    //    QChart *chart;
-    //    QBarCategoryAxis *axisX;
-    //    QValueAxis *axisY;
     QComboBox *comboBox;                           //  Все для комбобокса
     QString filePath;                              //  Путь до файла
     QList<QPair<QString, qreal>> fileData;         //  Данные файла
     QCheckBox *checkBox;                           //  Выбор цвета
     QPushButton* openTreeView;                     //  Кнопка открытия дерева файлов
     QLabel* diagrammType;                          //  Текст "Выбрать тип диаграммы"
-    IOCContainer DataGetterContainer;              //  IoC-контейнер
-    std::shared_ptr<ChartStrategy> chartStrategy;  //  Стратегия для рисования графика
+    IOCContainer container;              //  IoC-контейнер
+    std::shared_ptr<IStrategy> m_strategy;      //  Стратегия для рисования графика
 
 private slots:
     void on_selectionTreeChangedSlot(const QItemSelection &selected, const QItemSelection &deselected);
     void on_selectionListChangedSlot(const QItemSelection &selected, const QItemSelection &deselected);
-    void comboBoxItemSelected(int index);
+    void comboBoxItemSelected();
     void onCheckBoxStateChanged(int state);
     void onButtonOpenTreeView();
 };

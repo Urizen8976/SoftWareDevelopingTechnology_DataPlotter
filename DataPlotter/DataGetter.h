@@ -24,16 +24,16 @@
 #include <QSqlQueryModel>    //  Модель данных только для чтения для наборов результатов SQL
 
 
-class IDataGetterStrategy
+class IStrategy
 {
 public:
-    virtual ~IDataGetterStrategy() = default;
+    virtual ~IStrategy() = default;
     virtual bool CheckFile(const QString &filePath) = 0;
     virtual QList<QPair<QString, qreal>> GetData(const QString &filePath) = 0;
 };
 
 
-class SQLiteDataGetterStrategy : public IDataGetterStrategy
+class SQLiteStrategy : public IStrategy
 {
     bool CheckFile(const QString &filePath)
     {
@@ -90,7 +90,7 @@ private:
 };
 
 
-class JSONDataGetterStrategy : public IDataGetterStrategy
+class JSONStrategy : public IStrategy
 {
 public:
     bool CheckFile(const QString& filePath)

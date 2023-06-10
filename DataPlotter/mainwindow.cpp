@@ -1,10 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-
-
-#include "ioc_container.h"
+#include "IOC-Container.h"
 #include "DataGetter.h"
-#include "chartdrawer.h"
+#include "DataPlotter.h"
 
 
 int IOCContainer::s_nextTypeId = 0;
@@ -27,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     rightPartModel->setRootPath(homePath);
 
     QStringList formats;
-    formats << "sqlite" << "json" << "csv";
+    formats << "sqlite" << "json" << "csv";                //  Фильтрация типов данных для листа файлов по условию задачи
     QStringList filters;
     for (const QString& format : formats) {
         filters.append(QString("*.%1").arg(format));
@@ -47,12 +45,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->setMinimumSize(600, 400);
 
-    // Установка осей
-//    axisX = new QBarCategoryAxis();
-//    chart->addAxis(axisX, Qt::AlignBottom);
-//    axisY = new QValueAxis();
-//    chart->addAxis(axisY, Qt::AlignLeft);
-
     comboBox = new QComboBox();                            //  Настройка выбора графиков
     comboBox->addItem("Столбчатая диаграмма");
     comboBox->addItem("Круговая диаграмма");
@@ -60,11 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     openTreeView = new QPushButton("Открыть");             //  Настройка кнопки для открытия дерева выбора папки
     diagrammType = new QLabel("Выберите тип диаграммы");   //  Настройка строки "Выберите тип диаграммы"
 
-    //---------------------------------------------------------------------------------------------------
-    // Компоновка окна
-    // Создание главного макета
-    // Часть окна с функциями и часть окна с выводом
-    QHBoxLayout *functionLayout = new QHBoxLayout();
+    QHBoxLayout *functionLayout = new QHBoxLayout();       //  Создание главного макета
     QSplitter *splitter = new QSplitter(parent);           //  Создание объекта "сплиттер(разделитель)"
 
     functionLayout->addWidget(openTreeView);               //  Добавление виджетов на часть с функциями
@@ -83,9 +71,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setCentralWidget(mainWidget);                          //  Установка виджета на главное окно
 
 
-    QItemSelectionModel *treeSelectionModel = treeView->selectionModel();  // Отслеживание выбранного файла в дереве
+    QItemSelectionModel *treeSelectionModel = treeView->selectionModel();                   // Отслеживание выбранного файла в дереве
     connect(treeSelectionModel, &QItemSelectionModel::selectionChanged, this, &MainWindow::on_selectionTreeChangedSlot);
-    QItemSelectionModel *listSelectionModel = listView->selectionModel();  // Отслеживание выбранного файла в таблице файлов
+    QItemSelectionModel *listSelectionModel = listView->selectionModel();                   // Отслеживание выбранного файла в таблице файлов
     connect(listSelectionModel, &QItemSelectionModel::selectionChanged, this, &MainWindow::on_selectionListChangedSlot);
     connect(comboBox, SIGNAL(activated(int)), this, SLOT(comboBoxItemSelected(int)));
     connect(checkBox, &QCheckBox::stateChanged, this, &MainWindow::onCheckBoxStateChanged); // Соединение для изменения цветов графика
@@ -99,32 +87,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 
-//  Слот для обработки выбора элемента в TreeView. Выбор осуществляется с помощью курсора.
-void MainWindow::on_selectionTreeChangedSlot(const QItemSelection &selected, const QItemSelection &deselected)
+
+void MainWindow::on_selectionTreeChangedSlot(  //  Слот для обработки выбора элемента в TreeView. Выбор осуществляется с помощью курсора.
+const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(deselected);
-    //QModelIndex index = treeView->selectionModel()->currentIndex();
     QModelIndexList indexs =  selected.indexes();
     QString filePath = "";
-
     if (indexs.count() >= 1) {                              //  Определение количества выделенных индексов.
         QModelIndex ix =  indexs.constFirst();              //  Выделение только одного (В нашем случае), => всегда берем только первый.
         filePath = leftPartModel->filePath(ix);
         this->statusBar()->showMessage(                     //  Размещение информации в statusbar относительно выделенного модельного индекса
             "Выбранный путь : " + leftPartModel->filePath(indexs.constFirst()));
     }
-    // Получив выбранные данные из левой части filePath(путь к папке/файлу).
-    // Для представления в правой части устанваливаем корневой индекс относительно filePath.
-    // Табличное представление отображает только файлы, находящиеся в filePath (папки не отображает)
-    listView->setRootIndex(rightPartModel->setRootPath(filePath));
+    listView->setRootIndex(rightPartModel->setRootPath(filePath));  //  Установка корневого индекса относительно filePath (из левой части)
 }
 
 
-// Слот для обработки выбора элемента в TableView. Добавить проверку новых данных перед рисованием
-void MainWindow::on_selectionListChangedSlot(const QItemSelection &selected, const QItemSelection &deselected)
+void MainWindow::on_selectionListChangedSlot(  //  Слот для обработки выбора элемента в TableView. Добавить проверку новых данных перед рисованием
+const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(deselected);
-
+    Q_UNUSED(selected);
     QModelIndex index = listView->selectionModel()->currentIndex();
     filePath = rightPartModel->filePath(index);
     this->statusBar()->showMessage("Выбранный файл : " + filePath);
@@ -182,13 +166,13 @@ void MainWindow::comboBoxItemSelected(int index)
             {
                 DataGetterContainer.RegisterInstance<ChartStrategy, BarChartStrategy>();
                 setChartStrategy(DataGetterContainer.GetObject<ChartStrategy>());
-                drawChart();
+                container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
             if (selectedText == "Круговая диаграмма")
             {
-                DataGetterContainer.RegisterInstance<ChartStrategy, PieChartStrategy>();
+                container.RegisterInstance<ChartStrategy, PieChartStrategy>();
                 setChartStrategy(DataGetterContainer.GetObject<ChartStrategy>());
-                drawChart();
+                container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
     }
     else
