@@ -39,8 +39,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setStrategy(std::shared_ptr<IStrategy> strategy) {   m_strategy = strategy;   }
-    // void drawChart() {   IStrategy->draw(chartView, fileData);   }
+    void SetStrategy(std::shared_ptr<IStrategy> strategy) {   m_strategy = strategy;   }
+    // void DrawChart() {   IStrategy->draw(chartView, fileData);   }
     bool CheckFile() {  return m_strategy->CheckFile(filePath);  }
     QList<QPair<QString, qreal>> GetData() {  return m_strategy->GetData(filePath);  }
 
@@ -58,8 +58,8 @@ private:
     QCheckBox *checkBox;                           //  Выбор цвета
     QPushButton* openTreeView;                     //  Кнопка открытия дерева файлов
     QLabel* diagrammType;                          //  Текст "Выбрать тип диаграммы"
-    IOCContainer container;              //  IoC-контейнер
-    std::shared_ptr<IStrategy> m_strategy;      //  Стратегия для рисования графика
+    IOCContainer m_container;                      //  IoC-контейнер
+    std::shared_ptr<IStrategy> m_strategy;         //  Стратегия для рисования графика
 
 private slots:
     void on_selectionTreeChangedSlot(const QItemSelection &selected, const QItemSelection &deselected);

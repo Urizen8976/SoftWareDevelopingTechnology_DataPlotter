@@ -87,7 +87,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 
-
 void MainWindow::on_selectionTreeChangedSlot(  //  Слот для обработки выбора элемента в TreeView. Выбор осуществляется с помощью курсора.
 const QItemSelection &selected, const QItemSelection &deselected)
 {
@@ -104,34 +103,52 @@ const QItemSelection &selected, const QItemSelection &deselected)
 }
 
 
-void MainWindow::on_selectionListChangedSlot(  //  Слот для обработки выбора элемента в TableView. Добавить проверку новых данных перед рисованием
-const QItemSelection &selected, const QItemSelection &deselected)
+void MainWindow::on_selectionListChangedSlot(const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(deselected);
     Q_UNUSED(selected);
     QModelIndex index = listView->selectionModel()->currentIndex();
     filePath = rightPartModel->filePath(index);
     this->statusBar()->showMessage("Выбранный файл : " + filePath);
-
-    DataGetterContainer.RegisterInstance<IDataGetter, SQLiteDataGetter>();
-
-    if(DataGetterContainer.GetObject<IDataGetter>()->CheckFile(filePath))
+    QFileInfo fileInfo(filePath);
+    QString extension = fileInfo.suffix();
+    qDebug() << "Расширение файла:" << extension;
+    // Пока что установка стратегии реализована так
+    if (extension == "json")
     {
-        fileData = DataGetterContainer.GetObject<IDataGetter>()->getData(filePath);
+        m_container.RegisterInstance<IStrategy, JSONStrategy>();
+        SetStrategy(m_container.GetObject<IStrategy>());
+    }
+    else if (extension == "sqlite")
+    {
+        m_container.RegisterInstance<IStrategy, SQLiteStrategy>();
+        SetStrategy(m_container.GetObject<IStrategy>());
+    }
+    if(CheckFile())
+    {
+        // отладочная информация
+        qDebug() << "Проверка файла пройдена успешно.";
+        fileData = GetData();
+
+        for (int i = 0; i < qMin(10, fileData.size()); ++i)
+        {
+            const QPair<QString, qreal>& value = fileData[i];
+            qDebug() << "Time:" << value.first << "Value:" << value.second;
+        }
+
+        // Пока что выбор графика для рисования реализован так
         if(!fileData.isEmpty())
         {
             QString selectedText = comboBox->currentText();
             if (selectedText == "Столбчатая диаграмма")
             {
-                DataGetterContainer.RegisterInstance<ChartStrategy, BarChartStrategy>();
-                setChartStrategy(DataGetterContainer.GetObject<ChartStrategy>());
-                drawChart();
+                m_container.RegisterInstance<DataPlotter, BarDataPlotter>();
+                m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
             if (selectedText == "Круговая диаграмма")
             {
-                DataGetterContainer.RegisterInstance<ChartStrategy, PieChartStrategy>();
-                setChartStrategy(DataGetterContainer.GetObject<ChartStrategy>());
-                drawChart();
+                m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
+                m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
         }
         else
@@ -142,19 +159,29 @@ const QItemSelection &selected, const QItemSelection &deselected)
 }
 
 
-void MainWindow::onCheckBoxStateChanged(int state)
+void MainWindow::onCheckBoxStateChanged(int state)       //  Слот для обработки нажатия Чек-бокса: изменяем эффект на графике
 {
-    if (state == Qt::Checked)
+    if (state == Qt::Checked)                            //  Проверка состояния для применения эффекта
     {
         QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect;
         effect->setColor(Qt::black);
         chartView->chart()->setGraphicsEffect(effect);
     }
-    else {   chartView->chart()->setGraphicsEffect(nullptr);   }
+    else
+    {
+        chartView->chart()->setGraphicsEffect(nullptr);  //  Проверка состояния для применения эффекта
+    }
 }
 
 
-void MainWindow::onButtonOpenTreeView() {   treeView -> show();   }
+void MainWindow::onButtonOpenTreeView()  //  Слот для обработки нажатия кнопки "Открыть" : кнопка открытия дерева
+{
+    treeView->resize(600, 600);          //  Подредактируем размер
+    if (treeView->isVisible())           //  Если окно уже отображается (открыто)
+    {   treeView->raise();   }           //  Выведем его поверх
+    else
+    {   treeView->show();   }            //  Иначе отобразим его
+}
 
 
 void MainWindow::comboBoxItemSelected(int index)
@@ -164,15 +191,15 @@ void MainWindow::comboBoxItemSelected(int index)
             QString selectedText = comboBox->currentText();
             if (selectedText == "Столбчатая диаграмма")
             {
-                DataGetterContainer.RegisterInstance<ChartStrategy, BarChartStrategy>();
-                setChartStrategy(DataGetterContainer.GetObject<ChartStrategy>());
-                container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
+                m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
+                SetChartStrategy(container.GetObject<IStrategy>());
+                m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
             if (selectedText == "Круговая диаграмма")
             {
-                container.RegisterInstance<ChartStrategy, PieChartStrategy>();
-                setChartStrategy(DataGetterContainer.GetObject<ChartStrategy>());
-                container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
+                m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
+                SetChartStrategy(container.GetObject<IStrategy>());
+                m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
     }
     else
