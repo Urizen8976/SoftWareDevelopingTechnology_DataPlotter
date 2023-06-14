@@ -688,6 +688,10 @@ release/moc_MainWindow.cpp: ../DataPlotter/MainWindow.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCharts/qtchartsversion.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QPainter \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QPdfWriter \
+		../DataPlotter/IOC-Container.h \
+		../DataPlotter/DataGetter.h \
+		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCore/QString \
+		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QList \
 		release/moc_predefs.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/bin/moc.exe
 	C:\Qt\Qt5.10.1\5.12.3\mingw73_32\bin\moc.exe $(DEFINES) --include D:/Timur/Repositories/SoftWareDevelopingTechnology_DataPlotter/build-DataPlotter-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/release/moc_predefs.h -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/win32-g++ -ID:/Timur/Repositories/SoftWareDevelopingTechnology_DataPlotter/DataPlotter -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCharts -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtWidgets -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtANGLE -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtSql -IC:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCore -I. -IC:/Qt/Qt5.10.1/Tools/mingw730_32/lib/gcc/i686-w64-mingw32/7.3.0/include/c++ -IC:/Qt/Qt5.10.1/Tools/mingw730_32/lib/gcc/i686-w64-mingw32/7.3.0/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.10.1/Tools/mingw730_32/lib/gcc/i686-w64-mingw32/7.3.0/include/c++/backward -IC:/Qt/Qt5.10.1/Tools/mingw730_32/lib/gcc/i686-w64-mingw32/7.3.0/include -IC:/Qt/Qt5.10.1/Tools/mingw730_32/lib/gcc/i686-w64-mingw32/7.3.0/include-fixed -IC:/Qt/Qt5.10.1/Tools/mingw730_32/i686-w64-mingw32/include ..\DataPlotter\MainWindow.h -o release\moc_MainWindow.cpp
@@ -1295,6 +1299,10 @@ release/main.o: ../DataPlotter/main.cpp ../DataPlotter/MainWindow.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCharts/qtchartsversion.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QPainter \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QPdfWriter \
+		../DataPlotter/IOC-Container.h \
+		../DataPlotter/DataGetter.h \
+		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCore/QString \
+		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QList \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtWidgets/QApplication
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\DataPlotter\main.cpp
 
@@ -1878,12 +1886,13 @@ release/MainWindow.o: ../DataPlotter/MainWindow.cpp ../DataPlotter/MainWindow.h 
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCharts/qtchartsversion.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QPainter \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QPdfWriter \
-		ui_MainWindow.h \
-		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtWidgets/QApplication \
-		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtWidgets/QMenuBar \
+		../DataPlotter/IOC-Container.h \
 		../DataPlotter/DataGetter.h \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCore/QString \
-		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QList
+		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtGui/QList \
+		ui_MainWindow.h \
+		../DataPlotter/DataPlotter.h \
+		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/include/QtCharts/QBarSeries
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\MainWindow.o ..\DataPlotter\MainWindow.cpp
 
 release/moc_MainWindow.o: release/moc_MainWindow.cpp 

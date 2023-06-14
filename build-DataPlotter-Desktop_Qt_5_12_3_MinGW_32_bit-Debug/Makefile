@@ -210,7 +210,6 @@ Makefile: ../DataPlotter/DataPlotter.pro C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspec
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/qt_config.prf \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/win32-g++/qmake.conf \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/exclusive_builds.prf \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/toolchain.prf \
 		C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/default_pre.prf \
@@ -388,7 +387,6 @@ C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/qt_functions.prf:
 C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/qt_config.prf:
 C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/win32-g++/qmake.conf:
 C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/spec_post.prf:
-.qmake.stash:
 C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/exclusive_builds.prf:
 C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/toolchain.prf:
 C:/Qt/Qt5.10.1/5.12.3/mingw73_32/mkspecs/features/default_pre.prf:

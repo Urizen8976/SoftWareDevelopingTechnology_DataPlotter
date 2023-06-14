@@ -184,7 +184,7 @@ void MainWindow::onButtonOpenTreeView()  //  Слот для обработки 
 }
 
 
-void MainWindow::comboBoxItemSelected(int index)
+void MainWindow::comboBoxItemSelected()
 {
     if(!fileData.isEmpty())
     {
@@ -192,13 +192,13 @@ void MainWindow::comboBoxItemSelected(int index)
             if (selectedText == "Столбчатая диаграмма")
             {
                 m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
-                SetChartStrategy(container.GetObject<IStrategy>());
+                //SetChartStrategy(m_container.GetObject<IStrategy>());
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
             if (selectedText == "Круговая диаграмма")
             {
                 m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
-                SetChartStrategy(container.GetObject<IStrategy>());
+                //SetChartStrategy(m_container.GetObject<IStrategy>());
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
     }
