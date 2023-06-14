@@ -45,11 +45,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
-    QFileSystemModel *rightPartModel;              //  Файловая система
-    QFileSystemModel *leftPartModel;               //  готовая модель файловой системы
-    QTreeView *treeView;
-    QListView *listView;
+    QFileSystemModel *rightPartModel;              //  Готовая модель локальной файловой системы для правой части (отображение данных)
+    QFileSystemModel *leftPartModel;               //  Готовая модель локальной файловой системы для левой части (выбор папки)
+    QTreeView *treeView;                           //  Представление для отображения модели (левая часть)
+    QListView *listView;                           //  Представление для отображения модели (правая часть)
     QChartView *chartView;                         //  Все для графика
     QComboBox *comboBox;                           //  Все для комбобокса
     QString filePath;                              //  Путь до файла
