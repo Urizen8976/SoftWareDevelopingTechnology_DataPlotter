@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     comboBox = new QComboBox();                            //  Настройка выбора графиков
     comboBox->addItem("Столбчатая диаграмма");
     comboBox->addItem("Круговая диаграмма");
+    comboBox->addItem("Линейная диаграмма");
     checkBox = new QCheckBox("Черно-белый");               //  Добавление выбора цвета - checkBox
     openTreeView = new QPushButton("Открыть");             //  Настройка кнопки для открытия дерева выбора папки
     diagrammType = new QLabel("Выберите тип диаграммы");   //  Настройка строки "Выберите тип диаграммы"
@@ -191,14 +192,12 @@ void MainWindow::comboBoxItemSelected()
             QString selectedText = comboBox->currentText();
             if (selectedText == "Столбчатая диаграмма")
             {
-                m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
-                //SetChartStrategy(m_container.GetObject<IStrategy>());
+                m_container.RegisterInstance<DataPlotter, BarDataPlotter>();
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
             if (selectedText == "Круговая диаграмма")
             {
                 m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
-                //SetChartStrategy(m_container.GetObject<IStrategy>());
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
     }

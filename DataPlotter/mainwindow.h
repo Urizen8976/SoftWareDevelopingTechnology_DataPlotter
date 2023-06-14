@@ -40,7 +40,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void SetStrategy(std::shared_ptr<IStrategy> strategy) {   m_strategy = strategy;   }
-    // void DrawChart() {   IStrategy->draw(chartView, fileData);   }
     bool CheckFile() {  return m_strategy->CheckFile(filePath);  }
     QList<QPair<QString, qreal>> GetData() {  return m_strategy->GetData(filePath);  }
 
@@ -48,7 +47,7 @@ private:
     Ui::MainWindow *ui;
 
     QFileSystemModel *rightPartModel;              //  Файловая система
-    QFileSystemModel *leftPartModel;
+    QFileSystemModel *leftPartModel;               //  готовая модель файловой системы
     QTreeView *treeView;
     QListView *listView;
     QChartView *chartView;                         //  Все для графика
