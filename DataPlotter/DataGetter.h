@@ -140,4 +140,56 @@ public:
 };
 
 
+/*class SCVStrategy : public IStrategy
+{
+public:
+    bool CheckFile(const QString& filePath)
+    {
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly))              //  Открытие файла с помощью перечисления QIODevice для открытия на чтения.
+        {
+            qDebug() << "Не удалось открыть файл:" << filePath; return false;
+        }
+        QByteArray jsonData = file.readAll();             //  Считывание всех данных с устройства и возвращение их в виде массива байтов.
+        file.close();                                     //  Закрытие устройства и установка его OpenMode значение NotOpen
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);  //  Преобразование парсером из текста в QJsonDocument двоичное представление
+        if (jsonDoc.isNull() || !jsonDoc.isArray())                 //  Проверка документа на нулевость и содержание массива
+        {                                                           //  Нулевой документ создан через конструктор по умолчанию
+            qDebug() << "Данный файл JSON некорректен"; return false;
+        }
+        QJsonArray jsonArray = jsonDoc.array();
+        if (jsonArray.isEmpty())
+        {
+            qDebug() << "Данный JSON файл пуст!"; return false;
+        }
+
+        return true;
+    }
+
+    QList<QPair<QString, qreal>> GetData(const QString& filePath)
+    {
+        QFile file(filePath);
+        if ( !file.open(QFile::ReadOnly | QFile::Text) )
+        {
+                qDebug() << "File not exists";
+            } else {
+                // Создаём поток для извлечения данных из файла
+                QTextStream in(&file);
+                // Считываем данные до конца файла
+                while (!in.atEnd())
+                {
+                    // ... построчно
+                    QString line = in.readLine();
+                    // учитываем, что строка разделяется точкой с запятой на колонки
+                    for (QString item : line.split(";")) {
+                        data.append(QPair<QString, qreal>(item, 1));
+                    }
+                }
+                file.close();
+            }
+        return data;
+    }
+};*/
+
+
 #endif // DATAGETTER_H

@@ -56,15 +56,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //checkBox = new QComboBox();
     //checkBox->addItem("Черно-белый");
     openTreeView = new QPushButton("Открыть");             //  Настройка кнопки для открытия дерева выбора папки
-    diagrammType = new QLabel("Выберите тип диаграммы");   //  Настройка строки "Выберите тип диаграммы"
+    saveToPDF = new QPushButton("Сохранить в PDF");
 
-    QHBoxLayout *functionLayout = new QHBoxLayout();       //  Создание главного макета
-    QSplitter *splitter = new QSplitter(parent);           //  Создание виджета-разделителя
-    QHBoxLayout *functionLayout2 = new QHBoxLayout();       //  Создание 2-го главного макета
+    QHBoxLayout *functionLayout = new QHBoxLayout();       //  Создание верхнего макета
+    QSplitter *splitter = new QSplitter(parent);           //  Создание серединного виджета-разделителя
+    QHBoxLayout *functionLayout2 = new QHBoxLayout();      //  Создание нижнего макета
     functionLayout->addWidget(openTreeView);               //  Добавление виджетов на часть с функциями
-    functionLayout->addWidget(diagrammType);
     functionLayout2->addWidget(comboBox);
     functionLayout2->addWidget(checkBox);
+    functionLayout2->addWidget(saveToPDF);                  //
     splitter->addWidget(listView);                         //  Добавление виджетов на QSplitter
     splitter->addWidget(chartView);
 
@@ -88,6 +88,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         this, &MainWindow::onCheckBoxStateChanged);
     connect(openTreeView, &QPushButton::clicked,                           //  Соединение сигнала от кнопки ("открыть")
         this, &MainWindow::onButtonOpenTreeView);
+    connect(saveToPDF, &QPushButton::clicked,
+        this, &MainWindow::onButtonSaveToPDFPressed);
 
     QItemSelection toggleSelection;                        //  Пример организации установки курсора в TreeView отн-но модельного индекса
     QModelIndex topLeft;                                   //  Объявление модельного индекса topLeft
@@ -157,6 +159,11 @@ const QItemSelection &selected, const QItemSelection &deselected)
                 m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
+            if (selectedText == "Линейная диаграмма")
+            {
+                m_container.RegisterInstance<DataPlotter, LineDataPlotter>();
+                m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
+            }
         }
         else{}
     }
@@ -203,9 +210,25 @@ void MainWindow::comboBoxItemSelected()
                 m_container.RegisterInstance<DataPlotter, PieDataPlotter>();
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
+            if (selectedText == "Линейная диаграмма")
+            {
+                m_container.RegisterInstance<DataPlotter, LineDataPlotter>();
+                m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
+            }
     }
     else
     {}   //вывод отсутствия данных на экран
+}
+
+
+void MainWindow::onButtonSaveToPDFPressed()
+{
+    auto filePath = QFileDialog::getSaveFileName(nullptr, "Save chart as a PDF document", {}, "PDF (*.pdf)"); //  Диалоговое окно, позволяющее
+    if (filePath.isEmpty()) return;                                                                           //  выбирать файлы или каталоги
+    QPdfWriter pdfWriter = QPdfWriter {filePath};
+    QPainter painter = QPainter {&pdfWriter};
+    chartView->render(&painter);
+    painter.end();
 }
 
 

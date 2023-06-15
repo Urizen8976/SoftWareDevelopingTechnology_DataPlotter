@@ -55,7 +55,7 @@ private:
     QList<QPair<QString, qreal>> fileData;         //  Данные файла
     QCheckBox *checkBox;                           //  Выбор цвета
     QPushButton* openTreeView;                     //  Кнопка открытия дерева файлов
-    QLabel* diagrammType;                          //  Текст "Выбрать тип диаграммы"
+    QPushButton* saveToPDF;                        //  Кнопка сохранения диаграммы
     IOCContainer m_container;                      //  IoC-контейнер
     std::shared_ptr<IStrategy> m_strategy;         //  Стратегия для рисования графика
 
@@ -65,5 +65,6 @@ private slots:
     void comboBoxItemSelected();
     void onCheckBoxStateChanged(int state);
     void onButtonOpenTreeView();
+    void onButtonSaveToPDFPressed();
 };
 #endif // MAINWINDOW_H

@@ -81,10 +81,11 @@ protected:
         for (int i = 0; i < 10; ++i)
         {
             const QPair<QString, qreal>& pair = data[i];
-            QString time = pair.first;
-            float y = pair.second;
-            float x = time.toFloat();
-            series->append(x, y);  //  Добавление срезов к серии
+            QString date = pair.first;
+            QDateTime time = QDateTime {{QDate::fromString(date, "yyyy.MM")}};
+            qreal x = (qreal) time.toMSecsSinceEpoch();;
+            qreal y = pair.second;
+            series->append(i, y);  //  Добавление срезов к серии
         }
         chartView->chart()->addSeries(series);
         //chartView->chart()->legend()->show();
