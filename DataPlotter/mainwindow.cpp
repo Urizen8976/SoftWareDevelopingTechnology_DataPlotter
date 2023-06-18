@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     for (const QString& format : formats)
     {
         filters.append(QString("*.%1").arg(format));       //  Фильтрация типов данных для листа файлов по условию задачи
+        //  Ну или можно реализовать через конкатенацию строк
     }                                                      //  С заменой "%1" на "format" в строке
     rightPartModel->setNameFilters(filters);               //  Установка имени filters для применения к существующим файлам.
     rightPartModel->setNameFilterDisables(false);          //  Это свойство определяет, скрыты или отключены файлы, не прошедшие фильтр имен.
@@ -83,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(listSelectionModel, &QItemSelectionModel::selectionChanged,
         this, &MainWindow::on_selectionListChangedSlot);                   //  Слот обработки изменения выбора TreeView.
     connect(comboBox, SIGNAL(activated(int)),                              //  Соединение для изменения вида графика ("Столбчатая диаграмма")
-        this, SLOT(comboBoxItemSelected(int)));
+        this, SLOT(comboBoxItemSelected()));
     connect(checkBox, &QCheckBox::stateChanged,                            //  Соединение для изменения цветов графика ("Ч-Б")
         this, &MainWindow::onCheckBoxStateChanged);
     connect(openTreeView, &QPushButton::clicked,                           //  Соединение сигнала от кнопки ("открыть")
@@ -137,15 +138,20 @@ const QItemSelection &selected, const QItemSelection &deselected)
         m_container.RegisterInstance<IStrategy, SQLiteStrategy>();
         SetStrategy(m_container.GetObject<IStrategy>());
     }
+    /*else if (extension == "csv")
+    {
+        m_container.RegisterInstance<IStrategy, CSVStrategy>();
+        SetStrategy(m_container.GetObject<IStrategy>());
+    }*/
     if(CheckFile())
     {
         qDebug() << "Проверка файла пройдена успешно.";
         fileData = GetData();
-        for (int i = 0; i < qMin(10, fileData.size()); ++i)
+        /*for (int i = 0; i < qMin(10, fileData.size()); ++i)
         {
             const QPair<QString, qreal>& value = fileData[i];
             qDebug() << "Time:" << value.first << "Value:" << value.second;
-        }
+        }*/
         if(!fileData.isEmpty())
         {
             QString selectedText = comboBox->currentText();
@@ -216,8 +222,7 @@ void MainWindow::comboBoxItemSelected()
                 m_container.GetObject<DataPlotter>()->DrawChart(chartView, fileData);
             }
     }
-    else
-    {}   //вывод отсутствия данных на экран
+    else {}
 }
 
 

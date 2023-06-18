@@ -33,6 +33,19 @@ public:
 };
 
 
+class NullDataStrategy : public IStrategy
+{
+    bool CheckFile(const QString &)
+    {
+        return true;
+    }
+    QList<QPair<QString, qreal>> GetData(const QString &)
+    {
+        return {};  //  Вызов дефолтного конструктора для QList
+    }
+};
+
+
 class SQLiteStrategy : public IStrategy
 {
     bool CheckFile(const QString &filePath)

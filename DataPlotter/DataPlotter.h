@@ -33,7 +33,7 @@ protected:
     void SetupChart(QChartView* chartView, const QList<QPair<QString, qreal>>& data)
     {
         QPieSeries *series = new QPieSeries();  //  Создание объекта пустой серии
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < data.count(); ++i)
         {
             const QPair<QString, qreal>& pair = data[i];
             QString time = pair.first;
@@ -83,7 +83,6 @@ protected:
             const QPair<QString, qreal>& pair = data[i];
             QString date = pair.first;
             QDateTime time = QDateTime {{QDate::fromString(date, "yyyy.MM")}};
-            qreal x = (qreal) time.toMSecsSinceEpoch();;
             qreal y = pair.second;
             series->append(i, y);  //  Добавление срезов к серии
         }
